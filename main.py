@@ -28,26 +28,47 @@ from astrbot.api.message_components import Plain
 from astrbot.api.star import Context, Star, register
 
 PLUGIN_NAME = "astrbot_plugin_dafeiyu_faces"
-PLUGIN_VERSION = "1.0.2"
+PLUGIN_VERSION = "1.1.0"
 
 DEFAULT_POOLS = [
-    "害羞软乎=(´･ω･`)|(〃▽〃)|(/ω＼)|(⁄•⁄ω⁄⁄)|(*/ω＼*)|(//▽//)|(๑//ω//๑)",
+    # —— 基础包（日常情绪）——
+    "害羞软乎=(´･ω･`)|(〃▽〃)|(/ω＼)|(⁄•⁄ω⁄⁄)|(*/ω＼*)|(//▽//)|(๑//ω//๑)|(〃ω〃)",
     "嘴馋流口水=(¯﹃¯)|(￣﹁￣)|(´～`)|ԅ(¯﹃¯ԅ)|(￣￢￣)|(๑´ڡ`๑)|(๑>ڡ<๑)",
-    "得意开心=(≧▽≦)|(＾▽＾)|(￣▽￣)|(´▽`)|(●´∀｀●)|o(≧▽≦)o|(￣▽￣)~*",
+    "得意开心=(≧▽≦)|(＾▽＾)|(￣▽￣)|(´▽`)|(●´∀｀●)|o(≧▽≦)o|(￣▽￣)~*|(´∀`)|(⌒▽⌒)|(ﾉ´▽｀)ﾉ♪",
     "炸毛生气=(｀Д´)|(╯‵□′)╯︵┻━┻|(￣ヘ￣)|ヽ(#`Д´)ﾉ|(╬￣皿￣)|٩(๑`н´๑)۶|(ノ｀Д´)ノ|(＞д＜)",
     "委屈想哭=(´；ω；`)|(╥﹏╥)|(;´Д`)|(T﹏T)|(ಥ_ಥ)|(┬＿┬)|(｡•́︿•̀｡)|(´•︵•`)",
     "犯困迷糊=(´-ω-)|(˘ω˘)|(´ｚ`)|(´-ωก̀)|(。´-ω-)|(ｕ_ｕ)|(￣o￣)",
-    "惊讶吓到=(⊙ˍ⊙)|(⊙o⊙)|(゜ロ゜)|w(ﾟДﾟ)w|(°□°；)|Σ(ﾟДﾟ；)|(⊙_⊙)",
+    "惊讶吓到=(⊙ˍ⊙)|(⊙o⊙)|(゜ロ゜)|w(ﾟДﾟ)w|(°□°；)|Σ(ﾟДﾟ；)|(⊙_⊙)|(☉_☉)|( ﾟдﾟ)",
     "无语汗颜=(￣_￣)|(¬_¬)|(￢_￢)|(눈_눈)|(＝_＝)|(\"▔□▔)|(￣ー￣;)",
     "无奈摊手=╮(╯▽╰)╭|╮(￣▽￣)╭|┐(─__─)┌|╮(╯_╰)╭|╮(﹀_﹀)╭|(´-ω-｀)",
     "满足享受=(￣ˇ￣)|(￣︶￣)|(｡￫‿￩｡)|(=ˇωˇ=)|(˘︶˘)|<(￣︶￣)>|(´,,•ω•,,)",
     "傲娇哼=o(｀ω´*)o|(￣^￣)|(￣へ￣)|(｀へ´)|(ˉ▽￣～)|(｀_´)ゞ|(￣ε(#￣)",
-    "猫爪蹭蹭=ฅ´ω`ฅ|(ฅ´ω`ฅ)|ฅ(＾ω＾)ฅ|ʕ•̀ω•́ʔ✧|(=ΦωΦ=)|(=^･ω･^=)",
+    "猫爪蹭蹭=ฅ´ω`ฅ|(ฅ´ω`ฅ)|ฅ(＾ω＾)ฅ|ʕ•̀ω•́ʔ✧|(=ΦωΦ=)|(=^･ω･^=)|(=✧ω✧=)",
     "加油打气=(ง •̀_•́)ง|(*•̀ㅂ•́)و|(๑•̀ㅂ•́)و✧|(๑•̀ㅕ•́)و✧|(ง•̀ω•́)ง|(ง˙ω˙)ง",
+    "打招呼挥手=(´▽`)ﾉ|(´ω`)ノ|(・ω・)ノ|ヾ(´∀｀)ﾉ|(￣▽￣)ノ",
+    # —— 亲密包（暧昧/RP 过渡带）——
     "比心亲亲=(づ￣ 3￣)づ|(˘ε˘)|(´ε｀ʃƪ)|( ˘³˘)♥|(っ´ω`c)|٩(♡ε♡)۶|(๑ˇεˇ๑)|(⊃｡•́‿•̀｡)⊃|(っ˘ω˘ς)|(♡´▽`♡)|(❤ω❤)|(๑♡⌓♡๑)",
     "暧昧脸红=(¬‿¬)|(⁄ ⁄•⁄ω⁄•⁄ ⁄)|(⁄ ⁄>⁄ ▽ ⁄<⁄ ⁄)|(⁄˘⁄ ω ˘⁄ ♡)|(⁄ ›ω‹ ⁄)|(///∇///)|(///▽///)|(´////`)|(¦3[▓▓]",
     "失神迷离=▼▽▼|(＞﹏＜)|(×﹏×)|(♡о♡)|(♡˙︶˙♡)",
+    # —— 18+ 包（成年向，默认关，自己加包名开启）——
+    "喘息沉溺=(*´Д`)ﾊｧﾊｧ|(;´Д`)ﾊｧﾊｧ|(бвб)|(⁄▔﹃▔⁄)|(´д｀)ｲﾔﾝ|(⁄〇⁄ω⁄〇⁄)",
+    # —— 雌小鬼包（嚣张欠揍系，默认关）——
+    "嚣张欠揍=( ˘ω˘ ) ｽﾔｧ|(ΦωΦ)|(∪∀∪)|(・ω<)☆|≡≡≡Σ(⌒口⌒)|(・∀・)",
 ]
+
+# 池名 → 所属包：faces_packs 勾了哪个包，哪包的池才装载；
+# 自己在 faces_pools 里加的自定义池不在表里 = 恒装载，不受包开关影响
+POOL_PACKS = {
+    "害羞软乎": "基础", "嘴馋流口水": "基础", "得意开心": "基础", "炸毛生气": "基础",
+    "委屈想哭": "基础", "犯困迷糊": "基础", "惊讶吓到": "基础", "无语汗颜": "基础",
+    "无奈摊手": "基础", "满足享受": "基础", "傲娇哼": "基础", "猫爪蹭蹭": "基础",
+    "加油打气": "基础", "打招呼挥手": "基础",
+    "比心亲亲": "亲密", "暧昧脸红": "亲密", "失神迷离": "亲密",
+    "喘息沉溺": "18+",
+    "嚣张欠揍": "雌小鬼",
+}
+ALL_PACKS = ["基础", "亲密", "18+", "雌小鬼"]
+DEFAULT_PACKS = ["基础", "亲密"]
 
 RECENT_UMO_CAP = 50  # 记多少个会话的最近用脸（防状态文件无限长）
 
@@ -72,16 +93,35 @@ class DafeiyuFacesPlugin(Star):
             for s in (cfg.get("faces_pools") or DEFAULT_POOLS)
             if str(s).strip() and "=" in str(s)
         ] or list(DEFAULT_POOLS)
+        # 包开关：faces_packs 勾选启用哪些包（基础/亲密/18+/雌小鬼）；
+        # 未勾的包整体不装载。自定义池（不在 POOL_PACKS）恒装载
+        self.c_packs = [
+            str(x).strip() for x in (cfg.get("faces_packs") or DEFAULT_PACKS) if str(x).strip()
+        ] or list(DEFAULT_PACKS)
+        pack_set = set(self.c_packs)
         # 池解析：脸 → 同池脸列表；脸 → 池名；按"长脸优先"匹配防子串误中
         self._pool_of: dict = {}
         self._pool_name: dict = {}
+        self._pool_entries: list = []  # (池名, 张数, 是否装载) 供状态指令展示
+        skipped = []
         for entry in self.c_pool_cfg:
             name, _, faces_str = entry.partition("=")
+            pname = name.strip()
             faces = [f.strip() for f in faces_str.split("|") if f.strip()]
+            pack = POOL_PACKS.get(pname)
+            if pack and pack not in pack_set:
+                skipped.append(f"{pname}({pack})")
+                self._pool_entries.append((pname, len(faces), False))
+                continue
+            self._pool_entries.append((pname, len(faces), True))
             for f in faces:
                 self._pool_of.setdefault(f, [x for x in faces])
-                self._pool_name.setdefault(f, name.strip())
+                self._pool_name.setdefault(f, pname)
         self._faces_sorted = sorted(self._pool_of.keys(), key=len, reverse=True)
+        if skipped:
+            logger.info(
+                f"[随机颜文字] 启用包：{'、'.join(self.c_packs)}；跳过未开包的池：{'、'.join(skipped)}（faces_packs 里加包名可开启）"
+            )
         # 最近用脸：umo → deque(每条消息用过的脸列表)
         self._recent: dict = {}
         self._swap_count = 0
@@ -169,7 +209,15 @@ class DafeiyuFacesPlugin(Star):
                 text = getattr(p, "text", "") or ""
                 if not text:
                     continue
-                for face in self._faces_sorted:
+                # 长脸可能藏着短脸（(;´Д`)ﾊｧﾊｧ 里嵌着 (;´Д`)、(´▽`)ﾉ 里嵌着 (´▽`)）：
+                # 只处理"不是别的已匹配脸的子串"的那些，防止换短脸时把长脸劈坏
+                matched = [f for f in self._faces_sorted if f in text]
+                top = [
+                    f
+                    for f in matched
+                    if not any(f != g and f in g for g in matched)
+                ]
+                for face in top:
                     if face not in text:
                         continue
                     pool = self._pool_of.get(face) or []
@@ -217,16 +265,15 @@ class DafeiyuFacesPlugin(Star):
             yield event.plain_result("没权限")
             return
         pools = []
-        for entry in self.c_pool_cfg:
-            name, _, faces_str = entry.partition("=")
-            n = len([f for f in faces_str.split("|") if f.strip()])
-            pools.append(f"· {name}：{n} 张")
+        for pname, n, active in self._pool_entries:
+            mark = "" if active else "（包未开）"
+            pools.append(f"· {pname}：{n} 张{mark}")
         recent_bits = [
             f"{k.split(':')[-1]}: {'、'.join(f for lst in v for f in lst) or '无'}"
             for k, v in list(self._recent.items())[-5:]
         ]
         yield event.plain_result(
-            f"[随机颜文字] 开关：{'开' if self.c_on else '关'}｜连用窗口：{self.c_window} 条｜累计换脸：{self._swap_count} 次\n"
+            f"[随机颜文字] 开关：{'开' if self.c_on else '关'}｜启用包：{'、'.join(self.c_packs)}｜连用窗口：{self.c_window} 条｜累计换脸：{self._swap_count} 次\n"
             "情绪池：\n" + "\n".join(pools)
             + ("\n最近用脸：\n" + "\n".join(recent_bits) if recent_bits else "")
         )
