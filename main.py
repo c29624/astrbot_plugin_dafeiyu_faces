@@ -78,7 +78,7 @@ RECENT_UMO_CAP = 50  # 记多少个会话的最近用脸（防状态文件无限
 
 @register(
     PLUGIN_NAME,
-    "29624",
+    "c29624",
     "随机颜文字：同款颜文字连用就换——模型管时机情绪，库管多样性",
     PLUGIN_VERSION,
 )
