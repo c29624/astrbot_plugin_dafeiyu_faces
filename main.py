@@ -28,7 +28,16 @@ from astrbot.api.message_components import Plain
 from astrbot.api.star import Context, Star, register
 
 PLUGIN_NAME = "astrbot_plugin_dafeiyu_faces"
-PLUGIN_VERSION = "1.3.0"
+PLUGIN_VERSION = "1.4.0"
+
+# v1.4.0 上游注入：把选脸/拟声词规则注进 system_prompt（教上游），跟人设解耦——
+# 人设示例列表排第一的百搭脸会被锚定连用；改池改文案不再要动人设。
+# {pools} 占位符运行时填"当前装载的池名列表"；文案清空=不注入。
+DEFAULT_PROMPT_HINT = (
+    "颜文字按当下情绪从这些类别里换着挑一张（{pools}）——同一个别连着用、别固定一张；"
+    "拟声词也换着用（唔、嗯、呀、哈…按当下感觉来），放开头或单独成小句，别嵌进句子中间"
+)
+_INJECT_TAG = "[颜文字·拟声词风格]"
 
 DEFAULT_POOLS = [
     # —— 基础包（日常情绪）——
@@ -36,7 +45,8 @@ DEFAULT_POOLS = [
     "嘴馋流口水=(¯﹃¯)|(￣﹁￣)|(´～`)|ԅ(¯﹃¯ԅ)|(￣￢￣)|(๑´ڡ`๑)|(๑>ڡ<๑)|(*´﹃｀*)|(ŏ﹃ŏ)|(*^q^*)|(*¯﹃¯*)|( ๑ ´ ﹃ ` ๑ )|( ˶ • ﹃ • ˶ )|( ๑ ᵕ ﹃ ᵕ ๑ )|( ๑ ° ﹃ ° ๑ )|(*´ч`*)|( ¯﹃¯ )ﾉ|(´¬`)|(＾¬＾)|(*•ڡ•*)|( ˘ڡ˘ )ﾉ|( ˃ ³ ˂ )",
     "得意开心=(≧▽≦)|(＾▽＾)|(￣▽￣)|(´▽`)|(●´∀｀●)|o(≧▽≦)o|(￣▽￣)~*|(´∀`)|(⌒▽⌒)|(ﾉ´▽｀)ﾉ♪|(｡◕‿◕｡)|٩(ˊᗜˋ*)و",
     "炸毛生气=(｀Д´)|(╯‵□′)╯︵┻━┻|(￣ヘ￣)|ヽ(#`Д´)ﾉ|(╬￣皿￣)|٩(๑`н´๑)۶|(ノ｀Д´)ノ|(＞д＜)",
-    "委屈想哭=(´；ω；`)|(╥﹏╥)|(;´Д`)|(T﹏T)|(ಥ_ಥ)|(┬＿┬)|(｡•́︿•̀｡)|(´•︵•`)|(´･ω･`)|┭┮﹏┭┮|(T_T)|(╥_╥)|(´;ω;`)|(ノ_<、)|(இ﹏இ)|( ;∀;)|(つД`)|(இдஇ)|｡ﾟ(ﾟ´Д`ﾟ)ﾟ｡|(。>﹏<。)|o(╥﹏╥)o|(づ╥﹏╥)づ|(っ˘ω˘ς ;)",
+    "委屈巴巴=(｡•́︿•̀｡)|(´•︵•`)|(´･ω･`)|( ;∀;)|(っ˘ω˘ς ;)",
+    "泪目想哭=(´；ω；`)|(╥﹏╥)|(;´Д`)|(T﹏T)|(ಥ_ಥ)|(┬＿┬)|┭┮﹏┭╮|(T_T)|(╥_╥)|(´;ω;`)|(ノ_<、)|(இ﹏இ)|(つД`)|(இдஇ)|｡ﾟ(ﾟ´Д`ﾟ)ﾟ｡|(。>﹏<。)|o(╥﹏╥)o|(づ╥﹏╥)づ",
     "犯困迷糊=(´-ω-)|(˘ω˘)|(´ｚ`)|(´-ωก̀)|(。´-ω-)|(ｕ_ｕ)|(￣o￣)|( ˘ω˘ )zzz|(｡-ω-)zzZ|(ᴗ˳ᴗ)|(-ω-)|(_ _).｡o○|( ˘ω˘ )ﾉﾞ|(∪｡∪)|(˘ᴗ˘)|( ´ρ`)|(*´ρ`*)|(｡-ω-)zzzゞ|(-ω-｡)|( ´ -｀)zzZ|(˘･ω･˘ ).oO|(つ﹏<)z",
     "惊讶吓到=(⊙ˍ⊙)|(⊙o⊙)|(゜ロ゜)|w(ﾟДﾟ)w|(°□°；)|Σ(ﾟДﾟ；)|(⊙_⊙)|(☉_☉)|( ﾟдﾟ)|(⊙▽⊙)|(@口@)",
     "无语汗颜=(￣_￣)|(¬_¬)|(￢_￢)|(눈_눈)|(＝_＝)|(\"▔□▔)|(￣ー￣;)",
@@ -63,7 +73,7 @@ DEFAULT_POOLS = [
 # 自己在 faces_pools 里加的自定义池不在表里 = 恒装载，不受包开关影响
 POOL_PACKS = {
     "害羞软乎": "基础", "嘴馋流口水": "基础", "得意开心": "基础", "炸毛生气": "基础",
-    "委屈想哭": "基础", "犯困迷糊": "基础", "惊讶吓到": "基础", "无语汗颜": "基础",
+    "委屈巴巴": "基础", "泪目想哭": "基础", "犯困迷糊": "基础", "惊讶吓到": "基础", "无语汗颜": "基础",
     "无奈摊手": "基础", "满足享受": "基础", "傲娇哼": "基础", "猫爪蹭蹭": "基础",
     "加油打气": "基础", "打招呼挥手": "基础", "星星眼期待": "基础", "鱼鱼游动": "基础",
     "比心亲亲": "亲密", "暧昧脸红": "亲密", "失神迷离": "亲密",
@@ -98,6 +108,15 @@ class DafeiyuFacesPlugin(Star):
             self.c_hot_window = max(0, int(cfg.get("faces_hot_window", 20)))
         except Exception:
             self.c_hot_max, self.c_hot_window = 3, 20
+        # v1.4.0 上游注入 + 重点脸黑名单
+        self.c_prompt_on = bool(cfg.get("faces_prompt_on", True))
+        _hint = cfg.get("faces_prompt_hint")
+        self.c_prompt_hint = (
+            DEFAULT_PROMPT_HINT if _hint is None or not str(_hint).strip() else str(_hint).strip()
+        )
+        self._blacklist = {
+            str(x).strip() for x in (cfg.get("faces_blacklist") or []) if str(x).strip()
+        }
         self.c_pool_cfg = [
             str(s).strip()
             for s in (cfg.get("faces_pools") or DEFAULT_POOLS)
@@ -188,6 +207,34 @@ class DafeiyuFacesPlugin(Star):
 
     # ---------- 换脸主逻辑 ----------
 
+    def _style_hint(self) -> str:
+        """渲染注入文案：{pools} 填当前装载的池名；空文案=不注入"""
+        txt = (self.c_prompt_hint or "").strip()
+        if not txt:
+            return ""
+        if "{pools}" in txt:
+            loaded = "、".join(name for name, _, on in self._pool_entries if on)
+            txt = txt.replace("{pools}", loaded or "（无装载池）")
+        return _INJECT_TAG + "\n" + txt
+
+    @filter.on_llm_request(priority=50)
+    async def inject_style_hint(self, event: AstrMessageEvent, req=None, *args, **kwargs):
+        """把选脸/拟声词规则追加进 system_prompt（教上游，v1.4.0）。
+        防重：system_prompt 里已有本注入块就先整体剥掉再追加（流式重试/钩子重入不叠加）。
+        任何异常放行（fail-open）。"""
+        if not self.c_prompt_on:
+            return
+        try:
+            hint = self._style_hint()
+            if not hint:
+                return
+            base = str(getattr(req, "system_prompt", "") or "")
+            if _INJECT_TAG in base:
+                base = base.split(_INJECT_TAG, 1)[0].rstrip("\n")
+            req.system_prompt = (base + "\n\n" if base else "") + hint
+        except Exception:
+            logger.warning("[随机颜文字] 风格注入失败（放行）", exc_info=True)
+
     @filter.on_decorating_result(priority=100)
     async def swap_repeated_faces(self, event: AstrMessageEvent, *args, **kwargs):
         """同款连用就换：priority=100 保证在分段发送（默认0）等
@@ -245,9 +292,15 @@ class DafeiyuFacesPlugin(Star):
                     if not candidates:
                         candidates = [f for f in pool if f != face]
                     # 换脸条件：同款连用（window>0）；window=0 = 每张都随机发牌；
-                    # 或单脸超限（v1.3.0 热度计数≥hot_max，治隔条复读的百搭脸）
+                    # 或单脸超限（v1.3.0 热度计数≥hot_max，治隔条复读的百搭脸）；
+                    # 或点名黑名单（v1.4.0 faces_blacklist，列了就每次必换）
                     is_hot = self.c_hot_max > 0 and hot_cnt.get(face, 0) >= self.c_hot_max
-                    is_swap = window == 0 or (window > 0 and face in recent_faces) or is_hot
+                    is_swap = (
+                        window == 0
+                        or (window > 0 and face in recent_faces)
+                        or is_hot
+                        or face in self._blacklist
+                    )
                     if not is_swap and candidates:
                         used_now.append(face)  # 没重复：尊重模型自己的选择
                         continue
@@ -290,8 +343,10 @@ class DafeiyuFacesPlugin(Star):
             f"{k.split(':')[-1]}: {'、'.join(f for lst in v for f in lst) or '无'}"
             for k, v in list(self._recent.items())[-5:]
         ]
+        bl = "、".join(self._blacklist) or "无"
         yield event.plain_result(
             f"[随机颜文字] 开关：{'开' if self.c_on else '关'}｜启用包：{'、'.join(self.c_packs)}｜连用窗口：{self.c_window} 条｜累计换脸：{self._swap_count} 次\n"
+            f"风格注入：{'开' if self.c_prompt_on else '关'}｜必换黑名单：{bl}\n"
             "情绪池：\n" + "\n".join(pools)
             + ("\n最近用脸：\n" + "\n".join(recent_bits) if recent_bits else "")
         )
