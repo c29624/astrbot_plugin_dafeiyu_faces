@@ -28,15 +28,15 @@ from astrbot.api.message_components import Plain
 from astrbot.api.star import Context, Star, register
 
 PLUGIN_NAME = "astrbot_plugin_dafeiyu_faces"
-PLUGIN_VERSION = "1.2.1"
+PLUGIN_VERSION = "1.3.0"
 
 DEFAULT_POOLS = [
     # —— 基础包（日常情绪）——
-    "害羞软乎=(´･ω･`)|(〃▽〃)|(/ω＼)|(⁄•⁄ω⁄⁄)|(*/ω＼*)|(//▽//)|(๑//ω//๑)|(〃ω〃)|(*ﾉωﾉ)|(//ω//)|(*/▽＼*)|(。>///<。)|(〃>///<〃)|((//>_<//))|(＃>///<)|(⁄ ⁄•⁄-⁄•⁄ ⁄)|(⁄ ⁄>⁄ ⁄<⁄ ⁄)|(⁄ ⁄>⁄◡⁄<⁄ ⁄)|(つω`｡)|(〃ᗜ〃)|(´つヮ⊂)|(,,>᎑<,,)|(⸝⸝>᎑<⸝⸝)|(⸝⸝•ᴗ•⸝⸝)",
+    "害羞软乎=(〃▽〃)|(/ω＼)|(⁄•⁄ω⁄⁄)|(*/ω＼*)|(//▽//)|(๑//ω//๑)|(〃ω〃)|(*ﾉωﾉ)|(//ω//)|(*/▽＼*)|(。>///<。)|(〃>///<〃)|((//>_<//))|(＃>///<)|(⁄ ⁄•⁄-⁄•⁄ ⁄)|(⁄ ⁄>⁄ ⁄<⁄ ⁄)|(⁄ ⁄>⁄◡⁄<⁄ ⁄)|(つω`｡)|(〃ᗜ〃)|(´つヮ⊂)|(,,>᎑<,,)|(⸝⸝>᎑<⸝⸝)|(⸝⸝•ᴗ•⸝⸝)",
     "嘴馋流口水=(¯﹃¯)|(￣﹁￣)|(´～`)|ԅ(¯﹃¯ԅ)|(￣￢￣)|(๑´ڡ`๑)|(๑>ڡ<๑)|(*´﹃｀*)|(ŏ﹃ŏ)|(*^q^*)|(*¯﹃¯*)|( ๑ ´ ﹃ ` ๑ )|( ˶ • ﹃ • ˶ )|( ๑ ᵕ ﹃ ᵕ ๑ )|( ๑ ° ﹃ ° ๑ )|(*´ч`*)|( ¯﹃¯ )ﾉ|(´¬`)|(＾¬＾)|(*•ڡ•*)|( ˘ڡ˘ )ﾉ|( ˃ ³ ˂ )",
     "得意开心=(≧▽≦)|(＾▽＾)|(￣▽￣)|(´▽`)|(●´∀｀●)|o(≧▽≦)o|(￣▽￣)~*|(´∀`)|(⌒▽⌒)|(ﾉ´▽｀)ﾉ♪|(｡◕‿◕｡)|٩(ˊᗜˋ*)و",
     "炸毛生气=(｀Д´)|(╯‵□′)╯︵┻━┻|(￣ヘ￣)|ヽ(#`Д´)ﾉ|(╬￣皿￣)|٩(๑`н´๑)۶|(ノ｀Д´)ノ|(＞д＜)",
-    "委屈想哭=(´；ω；`)|(╥﹏╥)|(;´Д`)|(T﹏T)|(ಥ_ಥ)|(┬＿┬)|(｡•́︿•̀｡)|(´•︵•`)|┭┮﹏┭┮|(T_T)|(╥_╥)|(´;ω;`)|(ノ_<、)|(இ﹏இ)|( ;∀;)|(つД`)|(இдஇ)|｡ﾟ(ﾟ´Д`ﾟ)ﾟ｡|(。>﹏<。)|o(╥﹏╥)o|(づ╥﹏╥)づ|(っ˘ω˘ς ;)",
+    "委屈想哭=(´；ω；`)|(╥﹏╥)|(;´Д`)|(T﹏T)|(ಥ_ಥ)|(┬＿┬)|(｡•́︿•̀｡)|(´•︵•`)|(´･ω･`)|┭┮﹏┭┮|(T_T)|(╥_╥)|(´;ω;`)|(ノ_<、)|(இ﹏இ)|( ;∀;)|(つД`)|(இдஇ)|｡ﾟ(ﾟ´Д`ﾟ)ﾟ｡|(。>﹏<。)|o(╥﹏╥)o|(づ╥﹏╥)づ|(っ˘ω˘ς ;)",
     "犯困迷糊=(´-ω-)|(˘ω˘)|(´ｚ`)|(´-ωก̀)|(。´-ω-)|(ｕ_ｕ)|(￣o￣)|( ˘ω˘ )zzz|(｡-ω-)zzZ|(ᴗ˳ᴗ)|(-ω-)|(_ _).｡o○|( ˘ω˘ )ﾉﾞ|(∪｡∪)|(˘ᴗ˘)|( ´ρ`)|(*´ρ`*)|(｡-ω-)zzzゞ|(-ω-｡)|( ´ -｀)zzZ|(˘･ω･˘ ).oO|(つ﹏<)z",
     "惊讶吓到=(⊙ˍ⊙)|(⊙o⊙)|(゜ロ゜)|w(ﾟДﾟ)w|(°□°；)|Σ(ﾟДﾟ；)|(⊙_⊙)|(☉_☉)|( ﾟдﾟ)|(⊙▽⊙)|(@口@)",
     "无语汗颜=(￣_￣)|(¬_¬)|(￢_￢)|(눈_눈)|(＝_＝)|(\"▔□▔)|(￣ー￣;)",
@@ -91,6 +91,13 @@ class DafeiyuFacesPlugin(Star):
             self.c_window = max(0, int(cfg.get("faces_repeat_window", 2)))
         except Exception:
             self.c_window = 2
+        # 单脸上限（v1.3.0）：治"百搭脸隔条复读"——同款连用窗口拦得住紧挨着的重复，
+        # 拦不住隔一条用一次的刷屏脸；最近 hot_window 条里同一张脸≥hot_max 次就强制换
+        try:
+            self.c_hot_max = max(0, int(cfg.get("faces_hot_max", 3)))
+            self.c_hot_window = max(0, int(cfg.get("faces_hot_window", 20)))
+        except Exception:
+            self.c_hot_max, self.c_hot_window = 3, 20
         self.c_pool_cfg = [
             str(s).strip()
             for s in (cfg.get("faces_pools") or DEFAULT_POOLS)
@@ -144,7 +151,7 @@ class DafeiyuFacesPlugin(Star):
             if p.exists():
                 v = json.loads(p.read_text(encoding="utf-8"))
                 self._recent = {
-                    k: deque(lst, maxlen=max(1, self.c_window or 3))
+                    k: deque(lst, maxlen=max(1, self.c_window or 3, self.c_hot_window or 0))
                     for k, lst in (v.get("recent") or {}).items()
                 }
                 self._swap_count = int(v.get("swap_count") or 0)
@@ -200,11 +207,17 @@ class DafeiyuFacesPlugin(Star):
 
             window = self.c_window
             recent_faces = set()
+            hot_cnt: dict = {}
+            history = self._recent.get(umo)
+            msgs = list(history) if history else []
             if window > 0:
-                history = self._recent.get(umo)
-                if history:
-                    for lst in list(history)[-window:]:
-                        recent_faces.update(lst)
+                for lst in msgs[-window:]:
+                    recent_faces.update(lst)
+            if self.c_hot_max > 0:
+                hot_cnt = {}
+                for lst in msgs[-(self.c_hot_window or 20):]:
+                    for f in lst:
+                        hot_cnt[f] = hot_cnt.get(f, 0) + 1
 
             used_now: list = []  # 本条消息最终呈现的脸（换后的），记账用
             changed = False
@@ -231,8 +244,10 @@ class DafeiyuFacesPlugin(Star):
                     ]
                     if not candidates:
                         candidates = [f for f in pool if f != face]
-                    # 换脸条件：同款连用（window>0 时）；window=0 = 每张都随机发牌
-                    is_swap = window == 0 or (window > 0 and face in recent_faces)
+                    # 换脸条件：同款连用（window>0）；window=0 = 每张都随机发牌；
+                    # 或单脸超限（v1.3.0 热度计数≥hot_max，治隔条复读的百搭脸）
+                    is_hot = self.c_hot_max > 0 and hot_cnt.get(face, 0) >= self.c_hot_max
+                    is_swap = window == 0 or (window > 0 and face in recent_faces) or is_hot
                     if not is_swap and candidates:
                         used_now.append(face)  # 没重复：尊重模型自己的选择
                         continue
@@ -251,7 +266,7 @@ class DafeiyuFacesPlugin(Star):
 
             # 记账：本条消息实际呈现的脸进 recent（记换后的，用户真看到的）
             dq = self._recent.setdefault(
-                umo, deque(maxlen=max(1, window or 3))
+                umo, deque(maxlen=max(1, window or 3, self.c_hot_window or 0))
             )
             dq.append(list(dict.fromkeys(used_now)))
             if changed:
