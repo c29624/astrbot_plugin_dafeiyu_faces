@@ -28,7 +28,7 @@ from astrbot.api.message_components import Plain
 from astrbot.api.star import Context, Star, register
 
 PLUGIN_NAME = "astrbot_plugin_dafeiyu_faces"
-PLUGIN_VERSION = "2.1.0"
+PLUGIN_VERSION = "2.2.0"
 
 # v1.4.0 上游注入：把选脸/拟声词规则注进 system_prompt（教上游），跟人设解耦——
 # 人设示例列表排第一的百搭脸会被锚定连用；改池改文案不再要动人设。
@@ -124,7 +124,10 @@ class DafeiyuFacesPlugin(Star):
         for entry in custom:
             name, _, faces_str = entry.partition("=")
             pname = name.strip()
-            faces = [f.strip() for f in faces_str.split("|") if f.strip()]
+            # v2.2.0 双轨分隔：行内见全角｜就按｜切（半角|原样留在脸里，适配 |ω・) 这类）；
+            # 没有｜才按旧半角|切（老配置不动照跑）
+            sep = "｜" if "｜" in faces_str else "|"
+            faces = [f.strip() for f in faces_str.split(sep) if f.strip()]
             if pname in self._pool_name.values():
                 # 覆盖同名池：先把旧池的脸撤下来再挂新脸
                 old_faces = [f for f, n in self._pool_name.items() if n == pname]
